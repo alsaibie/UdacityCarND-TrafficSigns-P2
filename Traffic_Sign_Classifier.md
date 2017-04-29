@@ -166,7 +166,7 @@ y_train_sorted = visualize_images(X_train,y_train)
 ```
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_11_0.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_11_0.png)
 
 
 The data appear to be in low resolution and varying brightness levels, there is also a lot of similarity between images in a given class. Data must be shuffled properly.
@@ -203,7 +203,7 @@ plt.hist(y_train, bins=n_classes)
 
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_13_1.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_13_1.png)
 
 
 From the training set historgram we can see that some labels include many more examples than other. Some labels include close to 2000 examples, while others have around 250. In order to compensate for the underrepresented data, some fake data must be made.
@@ -287,7 +287,7 @@ axs[3].set_title('Rotate')
 
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_17_1.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_17_1.png)
 
 
 ### Step 2.2 Generate Randomly Augmented Images
@@ -405,7 +405,7 @@ plt.hist(y_train_aug, bins = n_classes)
 
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_23_1.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_23_1.png)
 
 
 As we can see, there are at least 1000 images available per class in the training set now.
@@ -487,7 +487,7 @@ print('Test Preprocessing Output')
 
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_29_1.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_29_1.png)
 
 
 ### Preprocess Images
@@ -590,7 +590,7 @@ axes[2].set_title('Testing Example. Mean: {}'.format(np.mean(X_test_p)))
 
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_31_7.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_31_7.png)
 
 
 ### Visualize a random set of preprocessed images one more time
@@ -606,7 +606,7 @@ for num, ax in enumerate(axes.flat):
 ```
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_33_0.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_33_0.png)
 
 
 The above are a random sample of preprocessed training images, they are not perfect. Some have very low contrast and can't be distinguished. But let's see if the machine can see better than humans. 
@@ -624,12 +624,12 @@ for num, ax in enumerate(axes.flat):
 ```
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_36_0.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_36_0.png)
 
 
 ## Step 3: Define Tensorflow Environment and Train
 
-I used the provided LeNeT architecture and adapted it for grayscale images and 43 labels as follows 
+I used the provided LeNeT architecture and adapted it for grayscale images and 43 labels as follows. This provided me with a good start on the validation output and I decided to try tweaking and preprocessing the data to bump the validation higher. 
 
 ### 3.1 Model Architecture
 
@@ -660,7 +660,7 @@ Implement the LeNet-5 neural network architecture
 
 **Activation.** 
 
-**Layer 5: Fullly Connected (Logits).** 10 Outputs
+**Layer 5: Fullly Connected (Logits).** 43 Outputs
 
 ### Output
 Return the result of the second connected layer
@@ -885,6 +885,8 @@ To train my model, I used 20 Epoch, a batch size of 128, a learning rate of 0.00
 I focused on preprocessing the data further to get a better output for the validation accuracy. 
 My final tests resulted in a training accuracy of 95.2%. I did not notice the validation accuracy become better with higher Epochs. A dropout of 0.5 was chosen for training. 
 
+The training was done in cell 209 and the validation accuracy was computed in cell 209 as well. To get this value I first ran the training on preprocessed images without augmenting them, there were debugging issues of course. I got values in the low 90%. I then added the fake image data and that helped bring my validation accuracy higher. I also had to make sure that the images were shuffled properly since consecutive images in the given set are similar and its good to distribute them accross the batches. 
+
  - 2017.04.26 @ 4:29 - 0.955, Augmented Images 1000min per label rate 0.001, Supplied LeNet, 10 EP, 128 Batch, sigma = 0.1, mu = 0
 
 ## Step 4 Training Analysis
@@ -909,7 +911,7 @@ with tf.Session() as sess:
     Test Accuracy = 0.921
 
 
-Using the provided test data set, the accuracy is 92%. It is lower than the validation accuracy, probably due to overfitting.  
+Using the provided test data set, the accuracy is 92%, calculated in cell 242. It is lower than the validation accuracy, probably due to overfitting.  
 
 ### 4.2 Predict the Sign Type for Each Image
 
@@ -934,7 +936,7 @@ for num, ax in enumerate(axes.flat):
 ```
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_53_0.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_53_0.png)
 
 
 I picked up a mix of signs that are similar to the dataset and other that vary slightly. The bicycle sign for example is different than the one provided. 
@@ -978,7 +980,7 @@ for num, ax in enumerate(axes.flat):
 
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_55_1.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_55_1.png)
 
 
 The trained model could not predict a few signs correctly. The curvy road sign was detected as animal crossing, the stop sign as a no entry, pedestrians as general caution and bicycle crossing as priority road. The others were predicted correctly
@@ -1042,7 +1044,7 @@ for num, ax in enumerate(axes.flat):
 ```
 
 
-![png](Traffic_Sign_Classifier-save_files/Traffic_Sign_Classifier-save_62_0.png)
+![png](Traffic_Sign_Classifier_files/Traffic_Sign_Classifier_62_0.png)
 
 
 For those images the were predicted correclty, the model has a very high (100%) confidence in the prediction. For those that the trained model got wrong, the situation varies. With the bicycle image, the model is very confident it is a priority road sign and it, along with the pedestrian crossing did not have their actual labels even considered in the top 5.
